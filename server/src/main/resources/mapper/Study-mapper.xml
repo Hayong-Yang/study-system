@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--MemberMapper 등록-->
+<mapper namespace="com.koreait.restapi.mapper.StudyMapper">
+    <insert id="insertStudy" parameterType="com.koreait.restapi.dto.StudyDTO">
+        INSERT INTO study (title, content, max_people, max_date, writer_id)
+        VALUES (#{title}, #{content}, #{maxPeople}, #{maxDate}, #{writerId})
+    </insert>
+
+    <select id="findAll" resultType="StudyDTO">
+        SELECT * FROM study
+        ORDER BY created_at DESC
+            LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*) FROM study
+    </select>
+
+    <update id="update" parameterType="StudyDTO">
+        UPDATE study
+        SET title = #{title}, content = #{content}, updated_at = NOW()
+        WHERE id = #{id} AND writer_id = #{writerId}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM study WHERE id = #{id}
+    </delete>
+
+    <select id="findById" parameterType="long" resultType="StudyDTO">
+        SELECT * FROM study WHERE id = #{id}
+    </select>
+
+    <select id="countApplication" resultType="int">
+        SELECT COUNT(*) FROM study_application
+        WHERE study_id = #{studyId} AND member_id = #{memberId}
+    </select>
+
+    <select id="countCurrentApplicants" resultType="int">
+        SELECT COUNT(*) FROM study_application
+        WHERE study_id = #{studyId}
+    </select>
+
+    <select id="getMaxPeopleByStudyId" resultType="int">
+        SELECT max_people FROM study
+        WHERE id = #{studyId}
+    </select>
+
+    <insert id="insertApplication">
+        INSERT INTO study_application (study_id, member_id)
+        VALUES (#{studyId}, #{memberId})
+    </insert>
+
+    <select id="findStudiesByMemberId" resultType="com.koreait.restapi.dto.StudyDTO">
+        SELECT s.*
+        FROM study s
+                 JOIN study_application a ON s.id = a.study_id
+        WHERE a.member_id = #{memberId}
+        ORDER BY a.applied_at DESC
+    </select>
+
+</mapper>

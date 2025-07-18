@@ -1,0 +1,9 @@
+front/.env
+front/.gitignore
+front/package-lock.json
+front/package.json
+
+ser
+server/src/main/resources/application.properties
+server/.gitignore
+front/README.md
